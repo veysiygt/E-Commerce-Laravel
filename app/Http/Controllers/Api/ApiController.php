@@ -27,7 +27,7 @@ class ApiController extends Controller
             'message' => $error
         ];
 
-        if(!empty($errorMessages)){
+        if(!empty($errorMessage)){
             $response['message'] = $errorMessage;
         }
 
