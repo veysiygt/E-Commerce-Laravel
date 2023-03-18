@@ -22,4 +22,8 @@ class Admin extends Model
         'password',
         'remember_token',
     ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 }
