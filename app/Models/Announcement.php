@@ -14,4 +14,5 @@ class Announcement extends Model
         'head',
         'body'
     ];
+    
 }

@@ -15,15 +15,16 @@ class Admin extends Model
         'telephone',
         'email',
         'image',
-        'password',
+        'password'
     ];
 
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token'
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime'
     ];
+
 }

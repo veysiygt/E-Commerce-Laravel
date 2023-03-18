@@ -15,4 +15,5 @@ class Card extends Model
         'quantity',
         'price'
     ];
+    
 }

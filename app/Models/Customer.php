@@ -26,11 +26,11 @@ class Customer extends Model
 
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token'
     ];
-    
+
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime'
     ];
     
 }
