@@ -4,43 +4,53 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use App\Models\User;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends ApiController
 {
-    public function registerAdmin(Request $request){
+    public function registerAdmin(Request $request)
+    {
 
         $validatedData = $request->validate([
-            'name' => 'required|string',
-            'surname' => 'required|string',
+            'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
             'telephone' => 'required|string|unique:admins',
             'email' => 'required|string|email|unique:admins',
             'password' => 'required|string|min:6',
-            'img' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if (!empty($request->img)) {
+            $file = $request->file('img');
+            $img = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/profile/admins-image/'), $img);
+            $data['img'] = 'images/profile/admins-image/' . $img;
+            $img = 'images/profile/admins-image/' . $img;
+        } else {
+            $img = null;
+        }
 
         $admin = Admin::create([
             'name' => $validatedData['name'],
             'surname' => $validatedData['surname'],
+            'img' => $img,
             'telephone' => $validatedData['telephone'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);
-        
-        if ($request->hasFile('img')) {
-            $file = $request->file('img');
-            $img = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/profile/admins-image/'), $img);
-            $data['image'] = 'images/profile/admins-image/' . $img;
-            $file_path = public_path($data['image']);
-        } else {
-            $img = null;
-            $file_path = null;
-        }
+
+        $user_id = Admin::find($admin->id);
+        $user = User::create([
+            'user_id' => $user_id->id,
+            'email' => $user_id->email,
+            'password' => $user_id->password,
+            'role_id' => 1
+        ]);
 
         $message = "Admin is created";
-        return $this->sendResponse($admin,$message,$file_path);
-
+        return $this->sendResponse($admin, $message);
     }
 
 }

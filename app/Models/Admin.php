@@ -14,7 +14,7 @@ class Admin extends Model
         'surname',
         'telephone',
         'email',
-        'image',
+        'img',
         'password'
     ];
 

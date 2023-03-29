@@ -22,11 +22,11 @@ class CreateEmployeesTable extends Migration
             $table->string('password');
             $table->string('telephone')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('image')->nullable();
-            $table->integer('identity_number')->unique();
+            $table->string('img')->nullable();
+            $table->string('identity_number')->unique();
             $table->string('mother_name')->nullable();
             $table->string('father_name')->nullable();
-            $table->enum('gender', ['bay', 'bayan']);
+            $table->enum('gender', ['male', 'female']);
             $table->string('place_of_birth');
             $table->date('birth_date');
             $table->string('address');
