@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Auth\Authenticatable;
 
-class Employee extends Model
+class Employee extends Model implements AuthenticatableContract
 {
-    use HasFactory;
+    use HasApiTokens, Authenticatable, HasFactory;
 
     protected $fillable = [
         'name',
@@ -22,16 +25,16 @@ class Employee extends Model
         'gender',
         'place_of_birth',
         'birth_date',
-        'address'
+        'address',
     ];
 
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token'
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime'
     ];
     
 }

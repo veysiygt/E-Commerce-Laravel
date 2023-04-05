@@ -15,7 +15,7 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id')->from(222000)->unique();
-            $table->integer('role_id')->default();
+            $table->integer('role_id')->default(3);
             $table->string('name');
             $table->string('surname');
             $table->string('email')->unique();
@@ -30,6 +30,7 @@ class CreateCustomersTable extends Migration
             $table->string('place_of_birth');
             $table->date('birth_date');
             $table->string('address');
+            $table->string('api_token', 80)->unique()->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
         });

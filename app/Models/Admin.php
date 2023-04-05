@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-class Admin extends Model
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Laravel\Sanctum\HasApiTokens;
+class Admin extends Model implements AuthenticatableContract
 {
-    use HasFactory;
+    use HasApiTokens, Authenticatable, HasFactory;
 
     protected $fillable = [
         'name',
@@ -16,6 +18,15 @@ class Admin extends Model
         'email',
         'img',
         'password'
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime'
     ];
 
 }

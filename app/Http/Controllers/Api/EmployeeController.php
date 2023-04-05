@@ -6,10 +6,12 @@ use App\Models\User;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends ApiController
 {
-    public function registerEmployee(Request $request){
+    public function registerEmployee(Request $request)
+    {
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -36,22 +38,22 @@ class EmployeeController extends ApiController
             $img = null;
         }
 
-            $employee = Employee::create([
-                'name' => $validatedData['name'],
-                'surname' => $validatedData['surname'],
-                'img' => $img,
-                'telephone' => $validatedData['telephone'],
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-                'identity_number' => $validatedData['identity_number'],
-                'mother_name' => $validatedData['mother_name'],
-                'father_name' => $validatedData['father_name'],
-                'gender' => $validatedData['gender'],
-                'place_of_birth' => $validatedData['place_of_birth'],
-                'birth_date' => $validatedData['birth_date'],
-                'address' => $validatedData['address'],
-            ]);
-        
+        $employee = Employee::create([
+            'name' => $validatedData['name'],
+            'surname' => $validatedData['surname'],
+            'img' => $img,
+            'telephone' => $validatedData['telephone'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'identity_number' => $validatedData['identity_number'],
+            'mother_name' => $validatedData['mother_name'],
+            'father_name' => $validatedData['father_name'],
+            'gender' => $validatedData['gender'],
+            'place_of_birth' => $validatedData['place_of_birth'],
+            'birth_date' => $validatedData['birth_date'],
+            'address' => $validatedData['address'],
+        ]);
+
         $user_id = Employee::find($employee->id);
         $user = User::create([
             'user_id' => $user_id->id,
@@ -63,7 +65,29 @@ class EmployeeController extends ApiController
         //$token = $employee->createToken('authToken')->plainTextToken;
 
         $message = "Employee is created";
-        return $this->sendResponse($employee,$message);
+        return $this->sendResponse($employee, $message);
+    }
 
+    public function loginEmployee(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string'
+        ]);
+
+        if (!Auth::guard('employee')->attempt($credentials)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $employee = $request->user('employee');
+
+        $apiToken = $employee->createToken('api_token')->plainTextToken;
+        $employee->setAttribute('api_token', $apiToken);
+        $employee->save();
+
+        $message = "Employee is logged in successfully";
+        return $this->sendResponse($employee, $message);
     }
 }

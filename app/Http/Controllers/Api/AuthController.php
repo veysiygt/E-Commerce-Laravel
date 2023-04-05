@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\User;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,7 +18,7 @@ class AuthController extends ApiController
             'surname' => 'required|string|max:255',
             'telephone' => 'required|string|unique:admins',
             'email' => 'required|string|email|unique:admins',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:6'
         ]);
 
         if (!empty($request->img)) {
@@ -52,5 +51,32 @@ class AuthController extends ApiController
         $message = "Admin is created";
         return $this->sendResponse($admin, $message);
     }
+
+    public function loginAdmin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string'
+        ]);
+
+        if (!Auth::guard('admin')->attempt($credentials)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $admin = $request->user('admin');
+
+        $apiToken = $admin->createToken('api_token')->plainTextToken;
+        $admin->setAttribute('api_token', $apiToken);
+        $admin->save();
+
+        $message = "Admin is logged in successfully";
+        return $this->sendResponse($admin, $message);
+    
+}
+
+    
+
 
 }

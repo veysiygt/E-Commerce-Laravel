@@ -30,6 +30,7 @@ class CreateEmployeesTable extends Migration
             $table->string('place_of_birth');
             $table->date('birth_date');
             $table->string('address');
+            $table->string('api_token', 80)->unique()->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 class CustomerController extends ApiController
 {
     public function registerCustomer(Request $request)
@@ -65,5 +67,26 @@ class CustomerController extends ApiController
         return $this->sendResponse($customer, $message);
     }
 
-    
+    public function loginCustomer(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string'
+        ]);
+
+        if (!Auth::guard('customer')->attempt($credentials)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $customer = $request->user('customer');
+
+        $apiToken = $customer->createToken('api_token')->plainTextToken;
+        $customer->setAttribute('api_token', $apiToken);
+        $customer->save();
+
+        $message = "Customer is logged in successfully";
+        return $this->sendResponse($customer, $message);
+    }
 }
