@@ -67,7 +67,7 @@ class CustomerController extends ApiController
         return $this->sendResponse($customer, $message);
     }
 
-    public function loginCustomer(Request $request)
+    public function loginAdmin(Request $request)
     {
         $credentials = $request->validate([
             'email' => 'required|string|email',
@@ -75,9 +75,7 @@ class CustomerController extends ApiController
         ]);
 
         if (!Auth::guard('customer')->attempt($credentials)) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
+            return $this->sendError('Please check your e-mail and password.');
         }
 
         $customer = $request->user('customer');
@@ -89,4 +87,6 @@ class CustomerController extends ApiController
         $message = "Customer is logged in successfully";
         return $this->sendResponse($customer, $message);
     }
+
+    
 }

@@ -60,9 +60,7 @@ class AuthController extends ApiController
         ]);
 
         if (!Auth::guard('admin')->attempt($credentials)) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
+            return $this->sendError('Please check your e-mail and password.');
         }
 
         $admin = $request->user('admin');
@@ -73,10 +71,12 @@ class AuthController extends ApiController
 
         $message = "Admin is logged in successfully";
         return $this->sendResponse($admin, $message);
-    
-}
+    }
 
-    
+
+
+
+
 
 
 }

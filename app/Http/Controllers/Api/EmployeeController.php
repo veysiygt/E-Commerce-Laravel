@@ -76,9 +76,7 @@ class EmployeeController extends ApiController
         ]);
 
         if (!Auth::guard('employee')->attempt($credentials)) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
+            return $this->sendError('Please check your e-mail and password.');
         }
 
         $employee = $request->user('employee');
